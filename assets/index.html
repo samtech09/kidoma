@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Fun Learning</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="css/simple-sidebar.css" rel="stylesheet">
+  <link href="css/custom.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+  <div class="d-flex" id="quizapp">
+
+    <!-- Sidebar -->
+    <div class="bg-dark text-white border-right" v-bind:class="{ toggled: !sideBarVisible }" id="sidebar-wrapper">
+      <div class="sidebar-heading">Play and Learn</div>
+      <div class="list-group list-group-flush">
+        <a href="#" class="list-group-item list-group-item-action bg-dark text-white">Maths</a>
+        <a href="#" class="list-group-item list-group-item-action bg-dark text-white" v-on:click="detailScore = !detailScore">Detailed Score</a>
+      </div>
+      <div class="bottom-group text-center">
+        <label>{{result.TotalCorrect}}</label>
+        <br />
+        <img src="img/correct.png" class="score-img" />
+
+        <br />
+
+        <label>{{result.TotalWrong}}</label>
+        <br />
+        <img src="img/wrong.png" class="score-img" />
+        <br />
+
+        <hr class="bg-secondary" />
+
+        <div>
+          <table id="score-qa" v-if="detailScore">
+            <tr>
+              <td><span class="title">Addition</span></td>
+              <td><span class="badge badge-success">{{result.QAAdd.Correct}}</span></td>
+              <td><span class="badge badge-danger">{{result.QAAdd.Wrong}}</span></td>
+            </tr>
+            <tr>
+              <td><span class="title">Subtraction</span></td>
+              <td><span class="badge badge-success">{{result.QASubs.Correct}}</span></td>
+              <td><span class="badge badge-danger">{{result.QASubs.Wrong}}</span></td>
+            </tr>
+            <tr>
+              <td><span class="title">Multiplication</span></td>
+              <td><span class="badge badge-success">{{result.QAMul.Correct}}</span></td>
+              <td><span class="badge badge-danger">{{result.QAMul.Wrong}}</span></td>
+            </tr>
+            <tr>
+              <td><span class="title">Division</span></td>
+              <td><span class="badge badge-success">{{result.QADiv.Correct}}</span></td>
+              <td><span class="badge badge-danger">{{result.QADiv.Wrong}}</span></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- /#sidebar-wrapper -->
+
+    <!-- Page Content -->
+    <div id="page-content-wrapper" :style="{ backgroundImage: 'url(' + result.BgImage + ')' }">
+
+      <nav class="navbar navbar-expand-lg navbar-light border-bottom">
+        <button class="btn btn-primary" id="menu-toggle" v-on:click="toggleSidebar">Toggle Menu</button>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+            <li class="nav-item active">
+              <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Settings</a>
+            </li>
+            <!-- <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Dropdown
+              </a>
+              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="#">Action</a>
+                <a class="dropdown-item" href="#">Another action</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">Something else here</a>
+              </div>
+            </li> -->
+          </ul>
+        </div>
+      </nav>
+
+      <div class="container-fluid">
+        <div id="content-bg" class="text-center">
+
+          <h1 class="mt-4">Maths Q-{{result.Qcounter}}</h1>
+
+          <!-- quiz block -->
+          <div id="quiz" class="centered text-right col-sm-4" v-if="!result.IsResult">
+              <div class="display-4">
+                  <label>{{result.Q.N1}}</label><br />
+                  <label>{{result.Q.Op}}</label>
+                  <label>{{result.Q.N2}}</label><br />
+                  <hr />
+                  <input name="ans" id="ans" ref='tbans' type="text" value="" autocomplete="off" v-on:input="handleAns" /><br />
+              </div>
+              <br />
+              <div class="text-center">
+                <input type="submit" value="Check" class="btn btn-success btn-lg" v-on:click="dopost" />   
+              </div>
+          </div>
+          <!-- quiz block ends -->
+
+
+          <!-- results block -->
+          <div id='result' class="centered col-sm-8" v-if="result.IsResult">
+            <br />
+            <div class="row">
+              <div class="col-sm-8">
+                <div class="display-4">
+                  <label class="alert" v-bind:class="{ 'alert-success': result.IsCorrect, 'alert-danger': !result.IsCorrect }">Your Ans: {{result.LastAns}}</label>
+                  <img v-if="result.IsCorrect" src="img/correct.png" class="result-img" />
+                    <img v-if="!result.IsCorrect" src="img/wrong.png" class="result-img" />
+                    <br />
+                  <small>
+                      <label>{{result.Q.N1}} &nbsp; {{result.Q.Op}} &nbsp; {{result.Q.N2}} = {{result.Q.Ans}}</label>
+                  </small>
+                </div>
+                <br />
+                <a href="#" v-on:click="doget" class="btn btn-success btn-lg">Next Question</a>
+              </div>
+              <div class="col-sm-4">
+                <img v-bind:src="result.GifFile" class="mx-auto d-block" />
+                <audio autoplay loop>
+                  <source v-bind:src="result.SoundFile" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+              </div>
+            </div>
+          </div>
+          <!-- results block ends -->
+
+
+          <!-- mini score -->
+          <div id="mini-score" v-if="!sideBarVisible">
+            <span class="btn btn-success">
+              Correct &nbsp;<span class="badge badge-light">{{result.TotalCorrect}}</span>
+            </span>
+            <span class="btn btn-danger">
+              Wrong &nbsp;<span class="badge badge-light">{{result.TotalWrong}}</span>
+            </span>
+          </div>
+          <!-- mini score ends -->
+      </div>
+        
+      <p class="text-right">(c) 2020 Achyut Gupta</p>
+      </div>
+    </div>
+    <!-- /#page-content-wrapper -->
+
+  </div>
+  <!-- /#wrapper -->
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- vuejs scripts -->
+  <script type="text/javascript" src="vendor/vue.js"></script>
+  <script type="text/javascript" src="vendor/axios.min.js"></script>
+
+  <script>
+    var quizapp = new Vue({
+      el: '#quizapp',
+      data: {
+          result: {
+            IsCorrect:  false,
+            TotalCorrect: 1,
+            TotalWrong:   0,
+            IsResult:   false,
+            Q: {
+                N1: 0,
+                N2: 0,
+                Ans: 0,
+                Op: "-"
+            },
+            BgImage: "",
+            QAAdd: {Correct: 0, Wrong: 0},
+            QASubs: {Correct: 0, Wrong: 0},
+            QAMul: {Correct: 0, Wrong: 0},
+            QADiv: {Correct: 0, Wrong: 0}
+          },
+          loading: true,
+          errored: false,
+          ans: "",
+          sideBarVisible: true,
+          detailScore: true
+      },
+      mounted() {
+        this.doget()
+      },
+      methods: {
+          toggleSidebar: function(event) {
+            event.preventDefault()
+            this.sideBarVisible = !this.sideBarVisible
+          },
+
+          handleAns: function(event){
+            this.ans = event.target.value;
+            //this.$refs.tbans.setSelectionRange(0, 0);
+          },
+          doget: function(event) {
+            if (event) {
+                event.preventDefault()
+            }
+            axios
+                .get('/quiz')
+                .then(response => {
+                    this.result = response.data
+                })
+                .catch(error => {
+                    console.log(error)
+                    this.errored = true
+                })
+                .finally(() => this.loading = false)
+          },
+
+          dopost: function(event) {
+            if (this.ans == "") {
+              return
+            }
+            axios
+            .post('/quiz', "ans="+this.ans, {headers: { 'content-type': 'application/x-www-form-urlencoded' }})
+            .then(response => {
+                this.result = response.data
+            })
+            .catch(error => {
+                console.log(error)
+                this.errored = true
+            })
+            .finally(() => this.loading = false)
+          }
+      }
+    })
+  </script>
+
+</body>
+
+</html>
