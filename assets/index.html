@@ -222,7 +222,7 @@
 
           handleAns: function(event){
             this.ans = event.target.value;
-            //this.$refs.tbans.setSelectionRange(0, 0);
+            this.$refs.tbans.setSelectionRange(0, 0);
           },
           doget: function(event) {
             if (event) {
@@ -241,6 +241,9 @@
           },
 
           dopost: function(event) {
+            if (event) {
+                event.preventDefault()
+            }
             if (this.ans == "") {
               return
             }
