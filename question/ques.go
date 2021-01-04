@@ -101,7 +101,7 @@ func divQuiz(digit1, digit2 int, simpleDiv bool, div1Max int) Question {
 	if simpleDiv {
 		// for simple division, numeratoor must be fully divisible by denominator
 		//   so get operands untile mod is 0
-		for i = 1; i > 0; i = (q.N1 % q.N2) {
+		for i = 1; i > 0 && q.N1 != q.N2; i = (q.N1 % q.N2) {
 			q.N2 = util.GetNum(min, max2)
 			q.N1 = util.GetNum(q.N2, max1)
 			// mood := q.N1 % q.N2

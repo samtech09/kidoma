@@ -22,7 +22,8 @@ clean:
 ## build: build application for current OS i.e. Linux
 build: clean
 	@if [ ! -d $(BINPATH) ] ; then mkdir -p $(BINPATH) ; fi
-	@GOOS=$(GOOS) GOARCH=$(GOARCH) go build -ldflags "-X main.appVer=$(APP_VER) -X main.buildVer=`date -u +b-%Y%m%d.%H%M%S`" -o $(BINPATH)/$(EXENAME) . || (echo "build failed $$?"; exit 1)
+	@GOOS=$(GOOS) GOARCH=$(GOARCH) CGO_ENABLED=0 go build -ldflags "-X main.appVer=$(APP_VER) -X main.buildVer=`date -u +b-%Y%m%d.%H%M%S`" -o $(BINPATH)/$(EXENAME) . || (echo "build failed $$?"; exit 1)
+	#@go build -ldflags "-X main.appVer=$(APP_VER) -X main.buildVer=`date -u +b-%Y%m%d.%H%M%S`" -o $(BINPATH)/$(EXENAME) . || (echo "build failed $$?"; exit 1)
 	@echo 'Build suceeded... done'
 
 
