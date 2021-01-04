@@ -80,7 +80,7 @@ func mulQuiz(digit1, digit2 int) Question {
 	q := Question{}
 	q.N1 = util.GetNum(min, max1)
 	q.N2 = util.GetNum(min, max2)
-	q.Op = "*"
+	q.Op = "x"
 	q.Ans = q.N1 * q.N2
 
 	return q

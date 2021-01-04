@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/gorilla/mux"
 	"github.com/samtech09/kidoma/internal/util"
@@ -43,7 +44,10 @@ type QAnalysis struct {
 }
 
 func main() {
-
+	port := os.Getenv("KIDOMA_PORT")
+	if port == "" {
+		port = "8081"
+	}
 	initConfig()
 
 	r := mux.NewRouter()
@@ -52,12 +56,12 @@ func main() {
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./assets"))))
 
 	server := &http.Server{
-		Addr:    ":8080",
+		Addr:    ":" + port,
 		Handler: r,
 	}
 
 	// run static server
-	fmt.Println("Listening on :8080")
+	fmt.Println("Listening on http://localhost:", port)
 	server.ListenAndServe()
 }
 
@@ -76,6 +80,8 @@ func quizHandler(w http.ResponseWriter, r *http.Request) {
 		qdata.IsResult = true
 		currentQues = question.Question{}
 		ans := r.FormValue("ans")
+		// remove leading zeros if any
+		ans = strings.TrimPrefix(ans, "0")
 		fmt.Printf("Q: %d %s %d = %d,   UserAns: %s\n", qdata.Q.N1, qdata.Q.Op, qdata.Q.N2, qdata.Q.Ans, ans)
 		qdata.LastAns = ans
 		if strconv.Itoa(qdata.Q.Ans) == ans {
@@ -134,7 +140,7 @@ func addQA(op string, isCorrect bool) {
 		} else {
 			qdata.QADiv.Wrong++
 		}
-	case "*":
+	case "x":
 		if isCorrect {
 			qdata.QAMul.Correct++
 		} else {
