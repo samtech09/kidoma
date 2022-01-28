@@ -7,10 +7,13 @@
 	"DigitsAdd2":     3,
 	"DigitsSub1":     3,
 	"DigitsSub2":     3,
-	"DigitsMul1":     1,
-	"DigitsMul2":     1,
+	"DigitsMul1":     2,
+	"DigitsMul2":     2,
 	"SimpleDivision": true,
-	"DigitsDiv1":     2,
-	"DigitsDiv2":     1,
-	"Div1Max":        90
+	"DigitsDiv1":     3,
+	"DigitsDiv2":     2,
+	"Div1Max":        0,
+	"Div2Max":        30,
+	"Div2Min": 		  3,
+	"Mul2Min": 		  1
 }

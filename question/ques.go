@@ -27,7 +27,10 @@ type QConfig struct {
 	DigitsMul1     int
 	DigitsMul2     int
 	SimpleDivision bool
-	Div1Max        int
+	Div1Max        int //maximum number for divident - just to keep division simple with small limited numbers
+	Div2Max        int //maximum number for divisor - just to avoid division by big numbers like 849/89
+	Div2Min        int //minimum number for divisor - to avoid divide by 1 type question
+	Mul2Min        int //minium number for multiplier - to avoid multiply by 1 type question
 }
 
 func getMax(digit1, digit2 int) (int, int) {
@@ -48,7 +51,7 @@ func getMax(digit1, digit2 int) (int, int) {
 }
 
 func sumQuiz(digit1, digit2 int) Question {
-	min := 1
+	min := 3
 	max1, max2 := getMax(digit1, digit2)
 
 	q := Question{}
@@ -61,7 +64,7 @@ func sumQuiz(digit1, digit2 int) Question {
 }
 
 func subQuiz(digit1, digit2 int) Question {
-	min := 1
+	min := 3
 	max1, max2 := getMax(digit1, digit2)
 
 	q := Question{}
@@ -73,8 +76,8 @@ func subQuiz(digit1, digit2 int) Question {
 	return q
 }
 
-func mulQuiz(digit1, digit2 int) Question {
-	min := 1
+func mulQuiz(digit1, digit2, mul2Min int) Question {
+	min := mul2Min
 	max1, max2 := getMax(digit1, digit2)
 
 	q := Question{}
@@ -86,12 +89,15 @@ func mulQuiz(digit1, digit2 int) Question {
 	return q
 }
 
-func divQuiz(digit1, digit2 int, simpleDiv bool, div1Max int) Question {
-	min := 1
+func divQuiz(digit1, digit2 int, simpleDiv bool, div1Max, div2Max, div2Min int) Question {
+	min := div2Min
 	max1, max2 := getMax(digit1, digit2)
 
 	if div1Max > 0 {
 		max1 = div1Max
+	}
+	if div2Max > 0 {
+		max2 = div2Max
 	}
 
 	q := Question{}
@@ -130,11 +136,11 @@ func GetRandomQues(c QConfig) Question {
 			break
 		}
 		if c.Mul && (n > 10 && n < 16) {
-			q = mulQuiz(c.DigitsMul1, c.DigitsMul2)
+			q = mulQuiz(c.DigitsMul1, c.DigitsMul2, c.Mul2Min)
 			break
 		}
 		if c.Div && (n > 15 && n < 21) {
-			q = divQuiz(c.DigitsDiv1, c.DigitsDiv2, c.SimpleDivision, c.Div1Max)
+			q = divQuiz(c.DigitsDiv1, c.DigitsDiv2, c.SimpleDivision, c.Div1Max, c.Div2Max, c.Div2Min)
 			break
 		}
 	}
