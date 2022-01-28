@@ -110,8 +110,33 @@
 
           <h1 class="mt-4">Maths Q-{{result.Qcounter}}</h1>
 
+          <!-- quiz block: table -->
+          <div id="table" class="centered text-right col-sm-8" v-if="!result.IsResult && result.Q.Op=='table'">
+            <div class="display-4">
+                <table style="border:none; border-collapse: collapse;">
+                    <tr v-for="index in 5" :key="index">
+                      <td>{{result.Q.N1}} x {{index}}</td><td></td>    
+                    </tr>
+                </table>
+                <hr />
+                <input name="ans" id="ans" ref='tbans' type="text" value="" autocomplete="off" v-on:input="handleAns" /><br />
+            </div>
+            <div class="display-4">
+              <label>{{result.Q.N1}}</label><br />
+              <label>{{result.Q.Op}}</label>
+              <label>{{result.Q.N2}}</label><br />
+              <hr />
+              <input name="ans" id="ans" ref='tbans' type="text" value="" autocomplete="off" v-on:input="handleAns" /><br />
+            </div>
+            <br />
+            <div class="text-center">
+              <input type="submit" value="Check" class="btn btn-success btn-lg" v-on:click="dopost" />   
+            </div>
+        </div>
+        <!-- quiz block:table ends -->
+
           <!-- quiz block -->
-          <div id="quiz" class="centered text-right col-sm-4" v-if="!result.IsResult">
+          <div id="quiz" class="centered text-right col-sm-4" v-if="!result.IsResult && result.Q.Op!='table'">
               <div class="display-4">
                   <label>{{result.Q.N1}}</label><br />
                   <label>{{result.Q.Op}}</label>
@@ -197,7 +222,7 @@
                 N1: 0,
                 N2: 0,
                 Ans: 0,
-                Op: "-"
+                Op: "table"
             },
             BgImage: "",
             QAAdd: {Correct: 0, Wrong: 0},
