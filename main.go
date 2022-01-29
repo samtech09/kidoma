@@ -35,6 +35,8 @@ type QuesData struct {
 	QASubs       QAnalysis
 	QADiv        QAnalysis
 	QAMul        QAnalysis
+	HasMore      bool
+	TotalQues    int
 }
 
 type QAnalysis struct {
@@ -48,7 +50,21 @@ func main() {
 	if port == "" {
 		port = "8081"
 	}
+
 	initConfig()
+
+	if config.AskNums {
+		// ask number of questions to user
+		fmt.Print("Additions: ")
+		fmt.Scanf("%d", &config.Add)
+		fmt.Print("Substraction: ")
+		fmt.Scanf("%d", &config.Subs)
+		fmt.Print("Multiplication: ")
+		fmt.Scanf("%d", &config.Mul)
+		fmt.Print("division: ")
+		fmt.Scanf("%d", &config.Div)
+	}
+	qdata.TotalQues = config.TotalQuesToAsk()
 
 	r := mux.NewRouter()
 	r.HandleFunc("/", redirectHandler)
@@ -82,13 +98,14 @@ func quizHandler(w http.ResponseWriter, r *http.Request) {
 		ans := r.FormValue("ans")
 		// remove leading zeros if any
 		ans = strings.TrimPrefix(ans, "0")
-		fmt.Printf("Q: %d %s %d = %d,   UserAns: %s\n", qdata.Q.N1, qdata.Q.Op, qdata.Q.N2, qdata.Q.Ans, ans)
 		qdata.LastAns = ans
 		if strconv.Itoa(qdata.Q.Ans) == ans {
 			qdata.IsCorrect = true
 			qdata.TotalCorrect++
+			//fmt.Printf("Q: %d %s %d = %d,   UserAns: %s\n", qdata.Q.N1, qdata.Q.Op, qdata.Q.N2, qdata.Q.Ans, ans)
 		} else {
 			qdata.TotalWrong++
+			fmt.Printf("Q-%d: %d %s %d = %d,   UserAns: %s  [wrong]\n", qdata.Qcounter, qdata.Q.N1, qdata.Q.Op, qdata.Q.N2, qdata.Q.Ans, ans)
 		}
 
 		x := util.GetNum(1, 4)
@@ -107,12 +124,16 @@ func quizHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		// get new question
 		qdata.IsResult = false
-		currentQues = question.GetRandomQues(config)
+		currentQues = question.GetRandomQues(&config)
 		qdata.Q = currentQues
+
+		//fmt.Print(currentQues)
 
 		if (qdata.Qcounter % 4) == 0 {
 			qdata.BgImage = "img/" + strconv.Itoa(util.GetNum(1, 11)) + ".jpg"
 		}
+		qdata.HasMore = (config.TotalQuesToAsk() > 0)
+		//fmt.Printf("More: %d  ", question.QCounter.Total())
 		qdata.Qcounter++
 	}
 

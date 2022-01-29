@@ -108,7 +108,7 @@
       <div class="container-fluid">
         <div id="content-bg" class="text-center">
 
-          <h1 class="mt-4">Maths Q-{{result.Qcounter}}</h1>
+          <h1 class="mt-4">Maths Q-{{result.Qcounter}} of {{result.TotalQues}}</h1>
 
           <!-- quiz block: table -->
           <div id="table" class="centered text-right col-sm-8" v-if="!result.IsResult && result.Q.Op=='table'">
@@ -167,7 +167,7 @@
                   </small>
                 </div>
                 <br />
-                <a href="#" v-on:click="doget" class="btn btn-success btn-lg">Next Question</a>
+                <a href="#" v-on:click="doget" class="btn btn-success btn-lg" v-if="result.HasMore">Next Question</a>
               </div>
               <div class="col-sm-4">
                 <img v-bind:src="result.GifFile" class="mx-auto d-block" />
@@ -228,13 +228,16 @@
             QAAdd: {Correct: 0, Wrong: 0},
             QASubs: {Correct: 0, Wrong: 0},
             QAMul: {Correct: 0, Wrong: 0},
-            QADiv: {Correct: 0, Wrong: 0}
+            QADiv: {Correct: 0, Wrong: 0},
+            HasMore: false,
+            TotalQues: 0
           },
           loading: true,
           errored: false,
           ans: "",
           sideBarVisible: true,
           detailScore: true
+
       },
       mounted() {
         this.doget()
@@ -257,6 +260,7 @@
                 .get('/quiz')
                 .then(response => {
                     this.result = response.data
+                    this.ans = ""
                 })
                 .catch(error => {
                     console.log(error)
@@ -269,7 +273,7 @@
             if (event) {
                 event.preventDefault()
             }
-            if (this.ans == "") {
+            if (!this.ans && this.ans.length == 0) {
               return
             }
             axios

@@ -1,6 +1,8 @@
 package question
 
-import "github.com/samtech09/kidoma/internal/util"
+import (
+	"github.com/samtech09/kidoma/internal/util"
+)
 
 type Question struct {
 	N1        int
@@ -10,14 +12,23 @@ type Question struct {
 	Op        string
 }
 
+// type QCount struct {
+// 	Add  int
+// 	Subs int
+// 	Div  int
+// 	Mul  int
+// 	//Total int
+// }
+
 type QConfig struct {
 	//firstStart bool
 	// templateDirectory string
 	// templateFileList  []string
-	Add            bool
-	Subs           bool
-	Div            bool
-	Mul            bool
+	Add            int
+	Subs           int
+	Div            int
+	Mul            int
+	AskNums        bool // if set to true, will ask number of questions to show for each type
 	DigitsAdd1     int
 	DigitsAdd2     int
 	DigitsSub1     int
@@ -31,6 +42,12 @@ type QConfig struct {
 	Div2Max        int //maximum number for divisor - just to avoid division by big numbers like 849/89
 	Div2Min        int //minimum number for divisor - to avoid divide by 1 type question
 	Mul2Min        int //minium number for multiplier - to avoid multiply by 1 type question
+}
+
+//var QCounter QCount
+
+func (q *QConfig) TotalQuesToAsk() int {
+	return q.Add + q.Div + q.Mul + q.Subs
 }
 
 func getMax(digit1, digit2 int) (int, int) {
@@ -122,27 +139,37 @@ func divQuiz(digit1, digit2 int, simpleDiv bool, div1Max, div2Max, div2Min int) 
 	return q
 }
 
-func GetRandomQues(c QConfig) Question {
+func GetRandomQues(c *QConfig) Question {
 	var q Question
 
-	for i := 0; i < 1; i = q.N1 {
-		n := util.GetNum(0, 20)
-		if c.Add && n < 6 {
-			q = sumQuiz(c.DigitsAdd1, c.DigitsAdd2)
-			break
+	if c.TotalQuesToAsk() > 0 {
+		for i := 0; i < 1; i = q.N1 {
+			n := util.GetNum(0, 20)
+			if n < 6 && c.Add > 0 {
+				q = sumQuiz(c.DigitsAdd1, c.DigitsAdd2)
+				c.Add--
+				break
+			}
+			if (n > 5 && n < 11) && c.Subs > 0 {
+				q = subQuiz(c.DigitsSub1, c.DigitsSub2)
+				c.Subs--
+				break
+			}
+			if (n > 10 && n < 16) && c.Mul > 0 {
+				q = mulQuiz(c.DigitsMul1, c.DigitsMul2, c.Mul2Min)
+				c.Mul--
+				break
+			}
+			if (n > 15 && n < 21) && c.Div > 0 {
+				q = divQuiz(c.DigitsDiv1, c.DigitsDiv2, c.SimpleDivision, c.Div1Max, c.Div2Max, c.Div2Min)
+				c.Div--
+				break
+			}
 		}
-		if c.Subs && (n > 5 && n < 11) {
-			q = subQuiz(c.DigitsSub1, c.DigitsSub2)
-			break
-		}
-		if c.Mul && (n > 10 && n < 16) {
-			q = mulQuiz(c.DigitsMul1, c.DigitsMul2, c.Mul2Min)
-			break
-		}
-		if c.Div && (n > 15 && n < 21) {
-			q = divQuiz(c.DigitsDiv1, c.DigitsDiv2, c.SimpleDivision, c.Div1Max, c.Div2Max, c.Div2Min)
-			break
-		}
+	} else {
+		q = Question{}
+		q.Op = "."
 	}
+
 	return q
 }

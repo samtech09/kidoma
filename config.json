@@ -1,8 +1,9 @@
 {
-    "Add":            true,
-	"Subs":           true,
-	"Div":            true,
-	"Mul":            true,
+    "Add":            5,
+	"Subs":           5,
+	"Div":            7,
+	"Mul":            8,
+	"AskNums":		  false,
 	"DigitsAdd1":     3,
 	"DigitsAdd2":     3,
 	"DigitsSub1":     3,
