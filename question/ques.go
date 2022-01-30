@@ -24,24 +24,25 @@ type QConfig struct {
 	//firstStart bool
 	// templateDirectory string
 	// templateFileList  []string
-	Add            int
-	Subs           int
-	Div            int
-	Mul            int
-	AskNums        bool // if set to true, will ask number of questions to show for each type
-	DigitsAdd1     int
-	DigitsAdd2     int
-	DigitsSub1     int
-	DigitsSub2     int
-	DigitsDiv1     int
-	DigitsDiv2     int
-	DigitsMul1     int
-	DigitsMul2     int
-	SimpleDivision bool
-	Div1Max        int //maximum number for divident - just to keep division simple with small limited numbers
-	Div2Max        int //maximum number for divisor - just to avoid division by big numbers like 849/89
-	Div2Min        int //minimum number for divisor - to avoid divide by 1 type question
-	Mul2Min        int //minium number for multiplier - to avoid multiply by 1 type question
+	Add                   int
+	Subs                  int
+	Div                   int
+	Mul                   int
+	AskNums               bool // if set to true, will ask number of questions to show for each type
+	DigitsAdd1            int
+	DigitsAdd2            int
+	DigitsSub1            int
+	DigitsSub2            int
+	DigitsDiv1            int
+	DigitsDiv2            int
+	DigitsMul1            int
+	DigitsMul2            int
+	SimpleDivision        bool
+	Div1Max               int  //maximum number for divident - just to keep division simple with small limited numbers
+	Div2Max               int  //maximum number for divisor - just to avoid division by big numbers like 849/89
+	Div2Min               int  //minimum number for divisor - to avoid divide by 1 type question
+	Mul2Min               int  //minium number for multiplier - to avoid multiply by 1 type question
+	AutoIncreaseWrongQues bool // auto add new question of same type if wrong attempted
 }
 
 //var QCounter QCount

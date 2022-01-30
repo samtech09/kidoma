@@ -16,5 +16,6 @@
 	"Div1Max":        0,
 	"Div2Max":        30,
 	"Div2Min": 		  3,
-	"Mul2Min": 		  1
+	"Mul2Min": 		  1,
+	"AutoIncreaseWrongQues": true
 }

@@ -106,6 +106,19 @@ func quizHandler(w http.ResponseWriter, r *http.Request) {
 		} else {
 			qdata.TotalWrong++
 			fmt.Printf("Q-%d: %d %s %d = %d,   UserAns: %s  [wrong]\n", qdata.Qcounter, qdata.Q.N1, qdata.Q.Op, qdata.Q.N2, qdata.Q.Ans, ans)
+
+			if config.AutoIncreaseWrongQues {
+				if qdata.Q.Op == "+" {
+					config.Add += 1
+				} else if qdata.Q.Op == "-" {
+					config.Subs += 1
+				} else if qdata.Q.Op == "÷" {
+					config.Div += 1
+				} else if qdata.Q.Op == "x" {
+					config.Mul += 1
+				}
+				qdata.TotalQues += 1
+			}
 		}
 
 		x := util.GetNum(1, 4)
